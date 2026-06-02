@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Local Community Event Portal</title>
+    <style>
+        .navigation-bar{
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            background-color: rgb(203, 203, 203);
+            background-blend-mode: soft-light;
+        }
+
+        .navigation-bar a{
+            text-decoration: none;
+            padding: 10px;
+            color: black;
+        }
+
+        .navigation-bar a:hover{
+            color: red;
+        }
+
+        .welBanner{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .welBanner p{
+            margin-top: 0px;
+            margin-bottom: 1px;
+        }
+
+        .highlight {
+            color: rgb(0, 255, 38);
+            font-weight: bold;
+        }
+
+        #Events{
+            display: flex;
+            justify-content: center;
+        }
+
+        table{
+            border-collapse: collapse;
+        }
+
+        table,
+        tr,
+        td {
+           border: 1px solid black;
+        }
+
+        .table-image {
+            border: 1px black solid;
+            border-radius: 5px;
+            height: 150px;
+            width: 150px;
+            transition: transform 0.3s;
+        }
+        
+        form {
+            border: 1px black solid;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 40%;
+        }
+        
+        #Contact{
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        form h2{
+            display: flex;
+            justify-content: center;
+        
+        }
+
+        .video{
+            display: grid;
+            justify-content: center;
+        }
+        video {
+            border: 2px black solid;
+            border-radius: 2px;
+            height: 300px;
+            width: 500px;
+        }
+        
+        .Event-map{
+            display: flex;
+            justify-content: center;
+        }
+
+        .map{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        hr{
+            width: 90%;
+            border: 1px black double;
+            /* margin: auto; */
+        }
+
+    </style>
+    <script>
+            function handleFormSubmit() {
+            event.preventDefault();
+                document.getElementById("confirmation")
+                    .textContent = "Registration Submitted";
+            }
+
+            function validatePhoneNumber(element) {
+                if (element.value.length !== 10) {
+                    alert("Enter a valid 10 digit phone number");
+                    }
+                }
+
+            function displayEventFee(eventType) {
+                let fee = "";
+                if (eventType === "music") {
+                    fee = "Fee: ₹500";
+                }
+                else if (eventType === "food") {
+                    fee = "Fee: ₹300";
+                }
+                else if (eventType === "dance") {
+                    fee = "Fee: ₹400";
+                }
+                document.getElementById("feeDisplay").textContent = fee;
+                }
+
+            
+            function countChar(element) {
+                document.getElementById("charCount").textContent =
+                    "Characters: " + element.value.length;
+            }
+            
+            function enlargeImage(image){
+                if(image.style.transform === "scale(2)"){
+                    image.style.transform = "scale(1)";
+                }
+                else{
+                    image.style.transform = "scale(2)";
+                }
+            }
+
+            
+            function displayMessage() {
+                document.getElementById("videoMessage").textContent =
+                    "Video ready to play";
+            }
+
+            function warnUser() {
+                return "Form not completed";
+            }
+
+            function savePreference() {
+                let value =
+                    document.getElementById("eventType").value;
+                localStorage.setItem("eventType", value);
+            }
+
+            window.onload = function () {
+                let saved =
+                    localStorage.getItem("eventType");
+                if (saved) {
+                    document.getElementById("eventType").value =saved;
+                }
+                displayEventFee(saved);
+            }
+
+
+            function clearPreferences() {
+                localStorage.clear();
+                sessionStorage.clear();
+
+                console.log("Preferences Cleared");
+            }
+
+            function getUserLocation() {
+                if(navigator.geolocation){
+                    navigator.geolocation.getCurrentPosition(  
+                        showPosition,
+                        showError,
+                        { enableHighAccuracy: true ,
+                            timeout:5000
+                        }
+                    );
+                }
+                else{
+                    alert("Gelocation not supported")
+                }
+            }
+
+            function showPosition(position) {
+                document.getElementById("locationDisplay")
+                    .textContent ="Latitude: " + position.coords.latitude + " Longitude: " + position.coords.longitude;
+                }
+
+            function showError(error) {
+                if (error.code === error.PERMISSION_DENIED) {
+                    alert("Permission denied");
+                }
+
+                if (error.code === error.TIMEOUT) {
+                    alert("Request timed out");
+                }
+            }
+
+
+    </script>
+</head>
+
+<body onbeforeunload="return warnUser()">
+
+    <!-- header section -->
+    <header>
+        <nav class="navigation-bar">
+            <a href="#Home">Home</a>
+            <a href="#Events">Events</a>
+            <a href="#Contact">Contact</a>
+            <a href="help.html" target="_blank">Help</a> </nav>
+    </header>
+    
+    <!-- Main section -->
+    <main>  
+        <section id="Home">
+            <div id="welcomeBanner" class="welBanner" style="background-color: blue; color: white; padding: 10px;">
+                <span style="color: red; font-weight: bold;">
+                    Early Registration Open!
+                </span>
+                <p>
+                    Welcome to the <span class="highlight">Community Event Portal</span>.
+                    Register for local events, check event locations, and stay connected
+                    with activities happening near you.
+                </p>
+            </div>
+        </section>
+        <br><br>
+        <hr>
+        
+        <section id="Events">
+            <table class="table">
+                <caption><b>Community events Gallery</b></caption>
+                <tr class="table-row">
+                    <td><img class="table-image" src="sample.png" alt="Image 1" title="image 1" ondblclick="enlargeImage(this)"></td>
+                    <td><img class="table-image" src="sample.png" alt="Image 2" title="image 2" ondblclick="enlargeImage(this)"></td>
+                    <td><img class="table-image" src="sample.png" alt="Image 3" title="image 3" ondblclick="enlargeImage(this)"></td>
+                </tr>
+                <tr class="table-row">
+                    <td><img class="table-image" src="sample.png" alt="Image 4" title="image 4" ondblclick="enlargeImage(this)"></td>
+                    <td><img class="table-image" src="sample.png" alt="Image 5" title="image 5" ondblclick="enlargeImage(this)"></td>
+                    <td><img class="table-image" src="sample.png" alt="Image 6" title="image 6" ondblclick="enlargeImage(this)"></td>
+                </tr>
+            </table>
+        </section>
+        <br><br>
+        <hr>
+        
+        <section id="Contact" >
+            <form id="event-registration-form" onsubmit="handleFormSubmit(event)">
+                <h2 class="form-heading">Registration Form</h2>
+                <label for="name">Name:</label>
+                <input type="text" name="name" id="name" placeholder="name" required autofocus><br><br>
+                
+                <label for="mobile-number">Ph Number:</label>
+                <input type="tel" name="phone" id="mobile-number" placeholder="9892244554" onblur="validatePhoneNumber(this)"><br><br>
+                
+                <label for="email">Email:</label>
+                <input type="email" name="email" id="email" placeholder="abc@mail.com" required><br><br>
+                
+                <label for="date">Date:</label>
+                <input type="date" name="date" id="date" required><br><br>
+                
+                <label for="eventType">Event Type:</label>
+                <select id="eventType" onchange="displayEventFee(this.value);savePreference();">
+                    <option value="">Select</option>
+                    <option value="music">music</option>
+                    <option value="food">Food Festival</option>
+                    <option value="dance">Dance Show</option>
+                </select>
+                <p id="feeDisplay"></p>
+                
+                <label for="textArea">Message:</label>
+                <textarea id="textArea" name="text" placeholder="Enter your message." onkeyup="countChar(this)"></textarea><br><br>
+                <p id="charCount">Characters:0</p>
+
+                <button type="submit">Register</button><br><br>
+
+                <button type="button" onclick="clearPreferences()">Clear Preferences</button>
+                <output id="confirmation"></output>
+            </form>
+        </section>
+        <br><br>
+        <hr>
+        
+        <section class="video">
+            <h4>Event promo</h4>
+            <video controls oncanplay="displayMessage()">
+                <source src= "sample.mp4" type="video/mp4">
+            </video>
+            <p id="videoMessage"></p>
+        </section>
+        <hr>
+        
+        <section id="mapping" class="Event-map">
+            <div class="map">
+                <h2>Find Nearest Events</h2>
+                <button type="button" onclick="getUserLocation()">Find Nearby Events</button>    
+                <p id="locationDisplay"></p>
+            </div>
+        </section>
+
+
+    </main>
+
+    <!-- Footer section -->
+    <footer>
+    </footer>
+
+</body>
+
+</html>
